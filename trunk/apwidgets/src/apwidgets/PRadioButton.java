@@ -30,6 +30,8 @@ import android.view.ViewGroup;
  * Do not add radio buttons to the radio group after 
  * the radio group is added to the widget container.
  * 
+ * Not working yet. Don't know how to check if chosen.
+ * 
  * @author Rikard Lundstedt
  *
  */
