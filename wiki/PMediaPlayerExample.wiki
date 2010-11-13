@@ -1,6 +1,9 @@
 #summary PMediaPlayer example
 
 = PMediaPlayer example =
+
+http://www.lundstedt.biz/apwidgets/images/PMediaPlayerExample.jpg
+
 {{{
 import apwidgets.*;
 
