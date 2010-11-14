@@ -48,7 +48,7 @@ void keyPressed() {
 //The MediaPlayer must be released when the app closes
 public void onDestroy() {
 
-  super.onDestroy(); //call onDestroy on subclasses
+  super.onDestroy(); //call onDestroy on super class
   if(player!=null) { //must be checked because or else crash when return from landscape mode
     player.release(); //release the player
 
