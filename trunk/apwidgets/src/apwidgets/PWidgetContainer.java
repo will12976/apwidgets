@@ -20,44 +20,67 @@ package apwidgets;
 
 import processing.core.PApplet;
 import android.widget.*;
+import android.content.Context;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 
 public class PWidgetContainer{
 	public static void enableGUI(PApplet argPApplet){
 		argPApplet.runOnUiThread(new EnableGUITask(argPApplet));
 	}
+	public PWidgetContainer getThis(){return this;}
+	private int index;
+	private static ViewFlipper viewFlipper;
+	private static void createViewFlipper(PApplet pApplet){
+		viewFlipper = new ViewFlipper(pApplet);
+		
+		pApplet.getWindow().addContentView(
+				viewFlipper,
+				new ViewGroup.LayoutParams(
+						ViewGroup.LayoutParams.FILL_PARENT,
+						ViewGroup.LayoutParams.FILL_PARENT));
+	}
 	private RelativeLayout layout;
 	private PApplet pApplet;
 	
 	public PWidgetContainer(PApplet pApplet) {
 		this.pApplet = pApplet;
-		
+		enableGUI(pApplet);
 		pApplet.runOnUiThread(new Runnable() 
 		{
 			public void run(){
-
+				if(viewFlipper==null){
+					createViewFlipper(getPApplet());
+				}
+				index = viewFlipper.getChildCount();
 			/*	activity.getWindow().clearFlags(
 						WindowManager.LayoutParams.FLAG_FULLSCREEN);
 				activity.getWindow().setSoftInputMode(
 						WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 */
-				ScrollView scrollView = new ScrollView(getPApplet());
-				
+				MyScrollView scrollView = new MyScrollView(getPApplet());
 								
-				getPApplet().getWindow().addContentView(
-						scrollView,
-						new ScrollView.LayoutParams(
-								ScrollView.LayoutParams.FILL_PARENT,
-								ScrollView.LayoutParams.FILL_PARENT));
-				
-				
+				viewFlipper.addView(scrollView,
+						new ViewGroup.LayoutParams(
+								ViewGroup.LayoutParams.FILL_PARENT,
+								ViewGroup.LayoutParams.FILL_PARENT));
 				
 				layout = new RelativeLayout(getPApplet());
+				
+			/*	getPApplet().getWindow().addContentView(
+						layout,
+						new ViewGroup.LayoutParams(
+								ViewGroup.LayoutParams.WRAP_CONTENT,
+								ViewGroup.LayoutParams.WRAP_CONTENT));*/
+
 				
 				scrollView.addView(layout, new ScrollView.LayoutParams(
 						ScrollView.LayoutParams.FILL_PARENT,
 						ScrollView.LayoutParams.FILL_PARENT));
+				
+				scrollView.setFillViewport(true);
 				
 			/*	getPApplet().getWindow().addContentView(
 						layout,
@@ -85,7 +108,7 @@ public class PWidgetContainer{
 		pApplet.runOnUiThread(new Runnable()
 		{
 			public void run(){
-				layout.setVisibility(View.GONE);
+			//	layout.setVisibility(View.GONE);
 				for(int i = 0;i<layout.getChildCount();i++){
 					layout.getChildAt(i).setVisibility(View.GONE);
 				}
@@ -96,10 +119,12 @@ public class PWidgetContainer{
 		pApplet.runOnUiThread(new Runnable()
 		{
 			public void run(){
-				layout.setVisibility(View.VISIBLE);
+				viewFlipper.setDisplayedChild(index);
+			//	layout.setVisibility(View.VISIBLE);
 				for(int i = 0;i<layout.getChildCount();i++){
 					layout.getChildAt(i).setVisibility(View.VISIBLE);
 				}
+				
 			}
 		});
 	}
@@ -135,7 +160,26 @@ public class PWidgetContainer{
 					WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 		}
 	}
+
 	public PApplet getPApplet(){
 		return pApplet;
+	}
+	
+	class MyScrollView extends ScrollView{
+
+		public MyScrollView(Context context) {
+			super(context);
+			// TODO Auto-generated constructor stub
+		}
+		//Should only be passed if Android ver 2.2, cause then the calls 
+		//are obscured by the overlying ViewGroup and never reach the
+		//processing surfaceTouchEvent and the mousePressed etc is
+		//never called
+		public boolean onTouchEvent(MotionEvent evt){
+			pApplet.surfaceTouchEvent(evt);//pass on to processing
+			return super.onTouchEvent(evt);//calling super makes the scrolling work
+			
+		}
+		
 	}
 }
