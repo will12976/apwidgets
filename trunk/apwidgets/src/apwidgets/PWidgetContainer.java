@@ -18,6 +18,8 @@
 
 package apwidgets;
 
+import java.util.Vector;
+
 import processing.core.PApplet;
 import android.widget.*;
 import android.content.Context;
@@ -27,75 +29,45 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 public class PWidgetContainer{
-	public static void enableGUI(PApplet argPApplet){
+
+	private static void enableGUI(PApplet argPApplet){
 		argPApplet.runOnUiThread(new EnableGUITask(argPApplet));
 	}
 	public PWidgetContainer getThis(){return this;}
-	private int index;
-	private static ViewFlipper viewFlipper;
-	private static void createViewFlipper(PApplet pApplet){
-		viewFlipper = new ViewFlipper(pApplet);
-		
+//	private int index;
+	//private static ScrollView scrollView;
+	
+	private static MyScrollView scrollView;
+	private static RelativeLayout layout;
+	private PApplet pApplet;
+	
+	private Vector<View> views = new Vector<View>();
+	
+	private static void createLayout(PApplet pApplet){
+		scrollView = new MyScrollView(pApplet);
+		scrollView.setFillViewport(true);
 		pApplet.getWindow().addContentView(
-				viewFlipper,
+				scrollView,
 				new ViewGroup.LayoutParams(
 						ViewGroup.LayoutParams.FILL_PARENT,
 						ViewGroup.LayoutParams.FILL_PARENT));
+		
+		layout = new RelativeLayout(pApplet);
+		
+		scrollView.addView(layout, new ScrollView.LayoutParams(
+						ScrollView.LayoutParams.FILL_PARENT,
+						ScrollView.LayoutParams.FILL_PARENT)); //WRAP_CONTENT?
 	}
-	private RelativeLayout layout;
-	private PApplet pApplet;
-	
+
 	public PWidgetContainer(PApplet pApplet) {
 		this.pApplet = pApplet;
-		enableGUI(pApplet);
+	//	enableGUI(pApplet);
 		pApplet.runOnUiThread(new Runnable() 
 		{
 			public void run(){
-				if(viewFlipper==null){
-					createViewFlipper(getPApplet());
+				if(layout==null){
+					createLayout(getPApplet());
 				}
-				index = viewFlipper.getChildCount();
-			/*	activity.getWindow().clearFlags(
-						WindowManager.LayoutParams.FLAG_FULLSCREEN);
-				activity.getWindow().setSoftInputMode(
-						WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-*/
-				MyScrollView scrollView = new MyScrollView(getPApplet());
-								
-				viewFlipper.addView(scrollView,
-						new ViewGroup.LayoutParams(
-								ViewGroup.LayoutParams.FILL_PARENT,
-								ViewGroup.LayoutParams.FILL_PARENT));
-				
-				layout = new RelativeLayout(getPApplet());
-				
-			/*	getPApplet().getWindow().addContentView(
-						layout,
-						new ViewGroup.LayoutParams(
-								ViewGroup.LayoutParams.WRAP_CONTENT,
-								ViewGroup.LayoutParams.WRAP_CONTENT));*/
-
-				
-				scrollView.addView(layout, new ScrollView.LayoutParams(
-						ScrollView.LayoutParams.FILL_PARENT,
-						ScrollView.LayoutParams.FILL_PARENT));
-				
-				scrollView.setFillViewport(true);
-				
-			/*	getPApplet().getWindow().addContentView(
-						layout,
-						new RelativeLayout.LayoutParams(
-								RelativeLayout.LayoutParams.FILL_PARENT,
-								RelativeLayout.LayoutParams.FILL_PARENT));
-				
-			*/
-				//Didn´t work
-				/*layout.setOnTouchListener(new OnTouchListener(){
-					public boolean onTouch(View view, MotionEvent event){
-						return activity.onTouchEvent(event);
-					}
-				}
-				);*/
 			}
 		});
 	}
@@ -103,28 +75,28 @@ public class PWidgetContainer{
 	public void addWidget(PWidget pWidget) {
 		pApplet.runOnUiThread(new AddWidgetTask(pWidget));
 	}
-	
+	//remove from layout and destroy instead, to save resources?
 	public void hide(){
 		pApplet.runOnUiThread(new Runnable()
 		{
 			public void run(){
 			//	layout.setVisibility(View.GONE);
-				for(int i = 0;i<layout.getChildCount();i++){
-					layout.getChildAt(i).setVisibility(View.GONE);
+				for(int i = 0;i<views.size();i++){
+					views.elementAt(i).setVisibility(View.GONE);
 				}
 			}
 		}); 
 	}
+	//create new and add instead to save resources?
 	public void show(){
 		pApplet.runOnUiThread(new Runnable()
 		{
 			public void run(){
-				viewFlipper.setDisplayedChild(index);
+			//	viewFlipper.setDisplayedChild(index);
 			//	layout.setVisibility(View.VISIBLE);
-				for(int i = 0;i<layout.getChildCount();i++){
-					layout.getChildAt(i).setVisibility(View.VISIBLE);
+				for(int i = 0;i<views.size();i++){
+					views.elementAt(i).setVisibility(View.VISIBLE);
 				}
-				
 			}
 		});
 	}
@@ -145,7 +117,8 @@ public class PWidgetContainer{
 			relLayout.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 			
 			layout.addView(pWidget.getView(), relLayout);
-
+			
+			views.addElement(pWidget.getView());
 		}
 	}
 	static class EnableGUITask implements Runnable{
@@ -163,23 +136,5 @@ public class PWidgetContainer{
 
 	public PApplet getPApplet(){
 		return pApplet;
-	}
-	
-	class MyScrollView extends ScrollView{
-
-		public MyScrollView(Context context) {
-			super(context);
-			// TODO Auto-generated constructor stub
-		}
-		//Should only be passed if Android ver 2.2, cause then the calls 
-		//are obscured by the overlying ViewGroup and never reach the
-		//processing surfaceTouchEvent and the mousePressed etc is
-		//never called
-		public boolean onTouchEvent(MotionEvent evt){
-			pApplet.surfaceTouchEvent(evt);//pass on to processing
-			return super.onTouchEvent(evt);//calling super makes the scrolling work
-			
-		}
-		
 	}
 }
