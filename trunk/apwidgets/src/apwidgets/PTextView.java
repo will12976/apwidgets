@@ -21,6 +21,7 @@ package apwidgets;
 import processing.core.PApplet;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 public abstract class PTextView extends PWidget implements TextWatcher{
@@ -28,6 +29,10 @@ public abstract class PTextView extends PWidget implements TextWatcher{
 	private int textSize = -1;
 	private String text;
 	private int textColor = -1;
+	private int editorInfo = EditorInfo.TYPE_NULL;
+	public int getEditorInfo(){
+		return editorInfo;
+	}
 	
 	public PTextView(int x, int y, int width, int height,
 			String text) {
@@ -107,6 +112,8 @@ public abstract class PTextView extends PWidget implements TextWatcher{
 		if (textSize != -1) {
 			((TextView) view).setTextSize(textSize);
 		}
+		((TextView) view).setImeOptions(editorInfo);
+		
 		((TextView) view).addTextChangedListener(this);
 		super.init(pApplet);
 	}
@@ -132,4 +139,15 @@ public abstract class PTextView extends PWidget implements TextWatcher{
 	}
 	public void beforeTextChanged(CharSequence s, int start, int count, int after){}
 	public void onTextChanged(CharSequence s, int start, int before, int count){}
+	
+	public void setImeOptions(int editorInfo){
+		this.editorInfo = editorInfo;
+		if (initialized) {
+			pApplet.runOnUiThread(new Runnable() {
+				public void run() {
+					((TextView) view).setImeOptions(getEditorInfo());
+				}
+			});
+		}
+	}
 }

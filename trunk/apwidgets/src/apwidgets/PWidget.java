@@ -75,7 +75,9 @@ public abstract class PWidget implements OnClickListener{
 		} catch (Exception e) {
 			// no such method, or an error.. which is fine, just ignore
 		}
-		view.setOnClickListener(this);
+		if(!(this instanceof PTextView)){
+			view.setOnClickListener(this);
+		}
 		initialized = true;
 	}
 	public void setPosition(int x, int y){
