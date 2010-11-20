@@ -27,7 +27,7 @@ import android.widget.EditText;
  *
  */
 public class PEditText extends PTextView {
-
+	
 	/**
 	 * Creates a new editable text field. 
 	 * @param x The text field's x position.
@@ -37,6 +37,7 @@ public class PEditText extends PTextView {
 	 */
 	public PEditText(int x, int y, int width, int height) {
 		super(x, y, width, height, "");
+		this.shouldNotSetOnClickListener = true; //otherwise ime options done, next etc doesn't work
 	}
 	/**
 	 * Initializes the text field. Is called by {@link PWidgetContainer} 

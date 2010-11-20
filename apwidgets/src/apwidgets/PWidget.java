@@ -33,6 +33,7 @@ public abstract class PWidget implements OnClickListener{
 	protected View view;
 	protected PApplet pApplet;
 	protected boolean initialized = false;
+	protected boolean shouldNotSetOnClickListener = false; //some widgets may break if an onClickListener is set, like TextView whos Done and Next etc. buttons don´t work
 
 	private Method onClickWidgetMethod;
 
@@ -75,7 +76,7 @@ public abstract class PWidget implements OnClickListener{
 		} catch (Exception e) {
 			// no such method, or an error.. which is fine, just ignore
 		}
-		if(!(this instanceof PTextView)){
+		if(!shouldNotSetOnClickListener){
 			view.setOnClickListener(this);
 		}
 		initialized = true;
