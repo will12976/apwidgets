@@ -36,16 +36,18 @@ public class PWidgetContainer{
 	public PWidgetContainer getThis(){return this;}
 //	private int index;
 	//private static ScrollView scrollView;
+	private int scrollViewID = 983475893;
 	
-	private static MyScrollView scrollView;
-	private static RelativeLayout layout;
+	private MyScrollView scrollView;
+	private RelativeLayout layout;
 	private PApplet pApplet;
 	
 	private Vector<View> views = new Vector<View>();
 	
-	private static void createLayout(PApplet pApplet){
+	private void createLayout(PApplet pApplet){
 		scrollView = new MyScrollView(pApplet);
 		scrollView.setFillViewport(true);
+		scrollView.setId(scrollViewID);
 		pApplet.getWindow().addContentView(
 				scrollView,
 				new ViewGroup.LayoutParams(
@@ -65,8 +67,13 @@ public class PWidgetContainer{
 		pApplet.runOnUiThread(new Runnable() 
 		{
 			public void run(){
-				if(layout==null){
+				if(getPApplet().getWindow().findViewById(scrollViewID)==null){
 					createLayout(getPApplet());
+				//	System.out.println("create new stuff");
+				}else {
+					scrollView = (MyScrollView)getPApplet().getWindow().findViewById(scrollViewID);
+					layout = (RelativeLayout)scrollView.getChildAt(0);
+				//	System.out.println("use existing");
 				}
 			}
 		});
@@ -136,5 +143,8 @@ public class PWidgetContainer{
 
 	public PApplet getPApplet(){
 		return pApplet;
+	}
+	public void release(){
+		pApplet.stop();
 	}
 }
