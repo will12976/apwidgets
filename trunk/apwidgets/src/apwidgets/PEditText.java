@@ -95,7 +95,7 @@ public class PEditText extends PTextView implements OnEditorActionListener{
 		if (view == null) {
 			view = new EditText(pApplet);
 		}
-	//	((EditText)view).setInputType(inputType);
+		((EditText)view).setInputType(inputType);
 		((EditText)view).setImeOptions(editorInfo);
 		((EditText)view).setOnEditorActionListener(this);
 
@@ -120,18 +120,21 @@ public class PEditText extends PTextView implements OnEditorActionListener{
 					}
 				}
 			}
+			return true;
 		}else if(actionId == EditorInfo.IME_ACTION_DONE){
 			onClick(view);
 			if(closeImeOnDone){
 				InputMethodManager imm = (InputMethodManager)pApplet.getSystemService(Context.INPUT_METHOD_SERVICE);
 			    imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
 			}
+			return true;
 		}
 		return false;
 	}
 	/**
 	 * You can set IMEOptions for this EditText using this method. 
-	 * See list of IMEOptions here: {@linktourl http://developer.android.com/reference/android/view/inputmethod/EditorInfo.html}
+	 * See list of IMEOptions here: <a href="http://developer.android.com/reference/android/view/inputmethod/EditorInfo.html">
+	 * http://developer.android.com/reference/android/view/inputmethod/EditorInfo.html</a>
 	 * @param editorInfo
 	 */
 	public void setImeOptions(int editorInfo){
@@ -146,7 +149,8 @@ public class PEditText extends PTextView implements OnEditorActionListener{
 	}
 	/**
 	 * You can set InputType here. See list of different InputTypes here: 
-	 * {@linktourl http://developer.android.com/reference/android/text/InputType.html}
+	 * <a href="http://developer.android.com/reference/android/text/InputType.html">
+	 * http://developer.android.com/reference/android/text/InputType.html</a>
 	 * @param inputType
 	 */
 	public void setInputType(int inputType){
