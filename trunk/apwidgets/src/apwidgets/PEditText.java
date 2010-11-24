@@ -105,7 +105,8 @@ public class PEditText extends PTextView implements OnEditorActionListener{
 		if(actionId == EditorInfo.IME_ACTION_NEXT){
 			if(nextEditText != null){
 				((EditText)nextEditText.getView()).requestFocus();
-			}else{
+				return true;
+			}/*else{
 				TextView v1 = (TextView)textView.focusSearch(View.FOCUS_RIGHT);
 				if (v1 != null) {
 					if (!v1.requestFocus(View.FOCUS_RIGHT)) {
@@ -119,8 +120,7 @@ public class PEditText extends PTextView implements OnEditorActionListener{
 						}
 					}
 				}
-			}
-			return true;
+			}*/
 		}else if(actionId == EditorInfo.IME_ACTION_DONE){
 			onClick(view);
 			if(closeImeOnDone){
