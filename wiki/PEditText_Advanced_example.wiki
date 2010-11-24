@@ -1,0 +1,59 @@
+#PEditText. Advanced example.
+
+= PEditText. Advanced example =
+
+{{{
+
+import apwidgets.*;
+import android.text.InputType;
+import android.view.inputmethod.EditorInfo;
+
+PWidgetContainer container;
+PEditText textField, numbersField, dateTimeField, passwordField;
+
+String info = "";
+
+void setup() {
+  container = new PWidgetContainer( this );
+
+  textField = new PEditText( 0, 50, width/2, 50 );
+  container.addWidget( textField );
+  textField.setInputType(InputType.TYPE_CLASS_TEXT); //Set the input type to text
+  textField.setImeOptions(EditorInfo.IME_ACTION_NEXT); //Enables a next button, shifts to next field
+
+  numbersField = new PEditText(width/2, 50, width/2, 50 );
+  container.addWidget( numbersField );
+  numbersField.setInputType(InputType.TYPE_CLASS_NUMBER); //Set the input type to number
+  numbersField.setImeOptions(EditorInfo.IME_ACTION_NEXT); //Enables a next button, shifts to next field
+  
+  dateTimeField = new PEditText( 0, 150, width/2, 50 );
+  numbersField.setNextEditText(dateTimeField); //Manually set which field to shift to next. Must be set AFTER the target is initialized
+  container.addWidget( dateTimeField );
+  dateTimeField.setInputType(InputType.TYPE_CLASS_TEXT); //Set the input type to text
+  dateTimeField.setImeOptions(EditorInfo.IME_ACTION_NEXT); //Enables a next button, shifts to next field
+  
+  passwordField = new PEditText( width/2, 150, width/2, 50 );
+  container.addWidget( passwordField );
+  passwordField.setInputType(InputType.TYPE_CLASS_PHONE); //Set the input type to phone number 
+  passwordField.setImeOptions(EditorInfo.IME_ACTION_DONE); //Enables a Done button
+  passwordField.setCloseImeOnDone(true); //close the IME when done is pressed
+
+}
+
+void draw() {
+  text(info, 0, 250); 
+}
+
+//If setImeOptions(EditorInfo.IME_ACTION_DONE) has been called 
+//on a PEditText. onClickWidget will be called when done editing.
+void onClickWidget(PWidget widget) {  
+  if(widget == passwordField){ //
+    info = textField.getText()+"\n"+
+      numbersField.getText()+"\n"+
+      dateTimeField.getText()+"\n"+
+      passwordField.getText();
+  }
+}
+
+
+}}}
