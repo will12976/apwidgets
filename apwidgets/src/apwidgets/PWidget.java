@@ -60,9 +60,9 @@ public abstract class PWidget implements OnClickListener{
 			try {
 				onClickWidgetMethod.invoke(pApplet, new Object[] { this });
 			} catch (Exception e) {
-				System.err.println("Disabling onWidgetEvent() because of an error.");
+			//	System.err.println("Disabling onWidgetEvent() because of an error.");
 				e.printStackTrace();
-				onClickWidgetMethod = null;
+			//	onClickWidgetMethod = null;
 			}
 		}
 	}
