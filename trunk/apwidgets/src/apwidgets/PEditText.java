@@ -22,7 +22,6 @@ import processing.core.PApplet;
 import android.content.Context;
 import android.text.InputType;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -44,7 +43,7 @@ public class PEditText extends PTextView implements OnEditorActionListener{
 		return editorInfo;
 	}
 	
-	private int inputType = InputType.TYPE_NULL;
+	private int inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE;
 	private int getInputType(){
 		return inputType;
 	}
