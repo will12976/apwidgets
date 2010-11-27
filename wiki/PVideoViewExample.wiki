@@ -1,5 +1,7 @@
 #PVideoViewExample
 
+= PVideoViewExample =
+
 {{{
 
 import apwidgets.*; 
