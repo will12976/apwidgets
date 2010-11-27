@@ -1,4 +1,4 @@
-#summary PMediaPlayer example
+#summary PMediaPlayerExample
 
 = PMediaPlayer example =
 
