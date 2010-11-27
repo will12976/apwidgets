@@ -1,6 +1,6 @@
 #PEditText. Advanced example.
 
-= PEditText. Advanced example =
+= PEditText_Advanced_example  =
 
 {{{
 
