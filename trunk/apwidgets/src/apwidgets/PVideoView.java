@@ -18,7 +18,16 @@
 
 package apwidgets;
 
+import java.util.Vector;
+
 import processing.core.PApplet;
+import android.content.Context;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnErrorListener;
+import android.media.MediaPlayer.OnPreparedListener;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.widget.MediaController;
 import android.widget.VideoView;
@@ -28,23 +37,54 @@ import android.widget.VideoView;
  * @author Rikard Lundstedt
  *
  */
-public class PVideoView extends PWidget {
-
+public class PVideoView extends PWidget implements OnCompletionListener, OnPreparedListener, OnErrorListener{
+	private static final String TAG = "PVideoView";
 	private boolean hasMediaController = false;
 	private String videoPath = null;
-
+	private boolean looping = false;
+	private boolean prepared = false;
+	private Vector<MediaPlayerTask> tasks = new Vector<MediaPlayerTask>();
+	
+	/**
+	 * Makes the video start from the beginning when the end of the video has been reached
+	 * @param looping
+	 */
+	public void setLooping(boolean looping){
+		this.looping = looping;
+	}
+	/**
+	 * Creates a new video view that fills the screen and has a media controller
+	 */
 	public PVideoView() {
 		this(0, 0, ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT, true);
 	}
-
+	/**
+	 * Creates a new video view that fills the screen 
+	 * @param hasMediaController Specifies whether the video view should have a media controller or not
+	 */
+	public PVideoView(boolean hasMediaController) {
+		this(0, 0, ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT, hasMediaController);
+	}
+	/**
+	 * Creates a new video view
+	 * @param x The x-position of the video view
+	 * @param y The y-position of the video view
+	 * @param width The width of the video view
+	 * @param height The height of the video view
+	 * @param hasMediaController Specifies whether the video view should have a media controller or not
+	 */
 	public PVideoView(int x, int y, int width, int height,
-			boolean argHasMediaController) {
+			boolean hasMediaController) {
 		super(x, y, width, height);
 
-		hasMediaController = argHasMediaController;
+		this.hasMediaController = hasMediaController;
 	}
-
+	/**
+	 * Sets the path of the video file. It should be placed on the SD-card
+	 * @param videoPath The path of the video file
+	 */
 	public void setVideoPath(String videoPath) {
 		this.videoPath = videoPath;
 		if (initialized) {
@@ -55,17 +95,30 @@ public class PVideoView extends PWidget {
 			});
 		}
 	}
-
+	/**
+	 * Starts playing the video file
+	 */
 	public void start() {
-		if (initialized) {
-			pApplet.runOnUiThread(new Runnable() {
-				public void run() {
-					((VideoView) view).start();
-				}
-			});
-		}
+	//	if (initialized) {
+			if(prepared){
+				pApplet.runOnUiThread(new Runnable() {
+					public void run() {
+						((VideoView) view).start();
+					}
+				});
+			}else{
+				tasks.addElement(new MediaPlayerTask(){
+					public void doTask(){
+						start();
+					}
+				});
+			}
+	//	}
 	}
-
+	/**
+	 *  Stops the playback I guess. I haven't tested this.
+	 * 
+	 */
 	public void stopPlayBack() {
 		if (initialized) {
 			pApplet.runOnUiThread(new Runnable() {
@@ -75,9 +128,11 @@ public class PVideoView extends PWidget {
 			});
 		}
 	}
-
+	/**
+	 * Pauses the playing of the video file
+	 */
 	public void pause() {
-		if (initialized) {
+		if (((VideoView) view).isPlaying()) {
 			pApplet.runOnUiThread(new Runnable() {
 				public void run() {
 					((VideoView) view).pause();
@@ -89,22 +144,29 @@ public class PVideoView extends PWidget {
 	/*
 	 * void resume(){ //wait til level 8 ((VideoView)view).resume(); }
 	 */
-
+	/**
+	 * Move to a certain point in the file,
+	 * counted from the beginning in millisecond.
+	 * @param msec
+	 */
 	public void seekTo(int msec) {
-		if (initialized) {
-			pApplet.runOnUiThread(new SeekToTask(msec));
+		if (prepared) {
+			pApplet.runOnUiThread(new GUIThreadSeekToTask(msec));
+		}else {
+			tasks.addElement(new SeekToTask(msec));
 		}
 	}
-
-	class SeekToTask implements Runnable {
+	
+	class GUIThreadSeekToTask implements Runnable {
 		int msec;
-
-		public SeekToTask(int argmsec) {
+		public GUIThreadSeekToTask(int argmsec) {
 			msec = argmsec;
 		}
-
 		public void run() {
-			((VideoView) view).seekTo(msec);
+			if((msec > getCurrentPosition() && ((VideoView) view).canSeekForward())||
+			(msec < getCurrentPosition() && ((VideoView) view).canSeekBackward())){
+				((VideoView) view).seekTo(msec);
+			}
 		}
 	}
 	/**
@@ -115,7 +177,7 @@ public class PVideoView extends PWidget {
 		this.pApplet = pApplet;
 
 		if (view == null) {
-			view = new VideoView(pApplet);
+			view = new MyVideoView(pApplet);
 		}
 		((VideoView) view).setZOrderMediaOverlay(true);
 
@@ -128,10 +190,77 @@ public class PVideoView extends PWidget {
 		if (videoPath != null) {
 			((VideoView) view).setVideoPath(videoPath);
 		}
+		((VideoView) view).setOnCompletionListener(this);
+		((VideoView) view).setOnPreparedListener(this);
+		((VideoView) view).setOnErrorListener(this);
 
 		super.init(pApplet);
 	}
+	/** 
+	 * Get the path of the video file
+	 * @return
+	 */
 	public String getVideoPath(){
 		return videoPath;
+	}
+	/**
+	 * Returns the duration of the video
+	 * @return
+	 */
+	public int getDuration(){
+		if(initialized && videoPath != null){
+			return ((VideoView) view).getDuration();
+		}
+		return 0;
+	}
+	/**
+	 * Returns the current position.
+	 * @return
+	 */
+	public int getCurrentPosition(){
+		if(initialized && videoPath != null){
+			return ((VideoView) view).getCurrentPosition();
+		}
+		return 0;
+	}
+	public void onCompletion(MediaPlayer mediaPlayer){
+		
+		if(looping){
+			((VideoView) view).start();
+		}
+	}
+	public boolean onError(MediaPlayer mediaPlayer, int a, int b){
+		Log.e(TAG, a+" " +b);
+		return false;
+	}
+	public void onPrepared(MediaPlayer mp){
+		prepared = true;
+				for(int i = 0;i<tasks.size();i++){
+					tasks.elementAt(i).doTask();
+				}
+				tasks.removeAllElements();
+	}
+	interface MediaPlayerTask {
+		public void doTask();
+	}
+	class SeekToTask implements MediaPlayerTask{
+		int msec;
+		public SeekToTask(int msec){
+			this.msec = msec;
+		}
+		public void doTask(){
+			((VideoView) view).seekTo(msec);
+		}
+	}
+	class MyVideoView extends VideoView{
+
+		public MyVideoView(Context context) {
+			super(context);
+			// TODO Auto-generated constructor stub
+		}
+		public boolean onKeyDown(int key, KeyEvent keyEvent){
+			pApplet.surfaceKeyDown(key, keyEvent);
+			return super.onKeyDown(key, keyEvent);
+		}
 	}
 }

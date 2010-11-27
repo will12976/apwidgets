@@ -105,21 +105,7 @@ public class PEditText extends PTextView implements OnEditorActionListener{
 			if(nextEditText != null){
 				((EditText)nextEditText.getView()).requestFocus();
 				return true;
-			}/*else{
-				TextView v1 = (TextView)textView.focusSearch(View.FOCUS_RIGHT);
-				if (v1 != null) {
-					if (!v1.requestFocus(View.FOCUS_RIGHT)) {
-						throw new IllegalStateException("unfocusable view...");//shouldn't get here for your layout
-					}
-				} else {
-					v1 = (TextView) textView.focusSearch(View.FOCUS_DOWN);
-					if(v1 != null) {
-						if(!v1.requestFocus(View.FOCUS_DOWN)) {
-							throw new IllegalStateException("unfocusable view..."); //should get here for your	layout
-						}
-					}
-				}
-			}*/
+			}
 		}else if(actionId == EditorInfo.IME_ACTION_DONE){
 			onClick(view);
 			if(closeImeOnDone){
