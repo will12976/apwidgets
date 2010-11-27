@@ -1,4 +1,4 @@
-#PEditText. Advanced example.
+#summary PEditText. Advanced example.
 
 = PEditText_Advanced_example  =
 
