@@ -48,6 +48,11 @@ public class PEditText extends PTextView implements OnEditorActionListener{
 		return inputType;
 	}
 	
+	private boolean horizontallyScrolling = true;
+	public boolean getHorizontallyScrolling(){
+		return horizontallyScrolling;
+	}
+	
 	/**
 	 * If you have called setImeOptions(EditorInfo.IME_ACTION_DONE), 
 	 * and you have set closeImeOnDone to true, the IME will close
@@ -96,6 +101,7 @@ public class PEditText extends PTextView implements OnEditorActionListener{
 		}
 		((EditText)view).setInputType(inputType);
 		((EditText)view).setImeOptions(editorInfo);
+		((EditText)view).setHorizontallyScrolling(horizontallyScrolling);
 		((EditText)view).setOnEditorActionListener(this);
 
 		super.init(pApplet);
@@ -148,4 +154,15 @@ public class PEditText extends PTextView implements OnEditorActionListener{
 			});
 		}
 	}
+	public void setHorizontallyScrolling(boolean horizontallyScrolling){
+		this.horizontallyScrolling = horizontallyScrolling;
+		if (initialized) {
+			pApplet.runOnUiThread(new Runnable() {
+				public void run() {
+					((EditText) view).setHorizontallyScrolling(getHorizontallyScrolling());
+				}
+			});
+		}
+	}
+	
 }

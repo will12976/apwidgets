@@ -22,8 +22,6 @@ import java.util.Vector;
 
 import processing.core.PApplet;
 import android.widget.*;
-import android.content.Context;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
