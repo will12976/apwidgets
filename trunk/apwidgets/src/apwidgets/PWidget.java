@@ -22,6 +22,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 import java.lang.reflect.Method;
+import java.util.Vector;
+
 import processing.core.PApplet;
 
 public abstract class PWidget implements OnClickListener{
@@ -35,6 +37,12 @@ public abstract class PWidget implements OnClickListener{
 	protected boolean initialized = false;
 	protected boolean shouldNotSetOnClickListener = false; //some widgets may break if an onClickListener is set, like TextView whos Done and Next etc. buttons don´t work
 
+	private Vector<OnClickWidgetListener> onClickWidgetListeners = new Vector<OnClickWidgetListener>();
+	
+	public void addOnClickWidgetListener(OnClickWidgetListener listener){
+		onClickWidgetListeners.addElement(listener);
+	}
+	
 	private Method onClickWidgetMethod;
 
 	public View getView() {
@@ -64,6 +72,9 @@ public abstract class PWidget implements OnClickListener{
 				e.printStackTrace();
 			//	onClickWidgetMethod = null;
 			}
+		}
+		for(int i = 0;i<onClickWidgetListeners.size();i++){
+			onClickWidgetListeners.elementAt(i).onClickWidget(this);
 		}
 	}
 

@@ -232,9 +232,7 @@ public class PMediaPlayer implements OnPreparedListener, OnErrorListener{
 	//	pApplet.runOnUiThread(new Runnable() {
 	//		public void run() {
 				for(int i = 0;i<tasks.size();i++){
-			
 					tasks.elementAt(i).doTask();
-					
 				}
 				tasks.removeAllElements();
 	//		}});
@@ -306,4 +304,5 @@ public class PMediaPlayer implements OnPreparedListener, OnErrorListener{
 		Log.e(TAG, a+" " +b);
 		return false;
 	}
+
 } 
