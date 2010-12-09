@@ -109,7 +109,6 @@ public abstract class PTextView extends PWidget implements TextWatcher{
 			((TextView) view).setTextSize(textSize);
 		}
 		
-		
 		((TextView) view).addTextChangedListener(this);
 		super.init(pApplet);
 	}
