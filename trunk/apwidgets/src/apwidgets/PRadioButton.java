@@ -19,7 +19,9 @@
 package apwidgets;
 
 import processing.core.PApplet;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.view.ViewGroup;
 /**
  * A radio button. <br>
@@ -35,7 +37,10 @@ import android.view.ViewGroup;
  * @author Rikard Lundstedt
  *
  */
-public class PRadioButton extends PCompoundButton {
+public class PRadioButton extends PButton {
+	
+	protected boolean checked = false;
+	
 	/**
 	 * Creates a radio button. 
 	 * @param text The text on the label of the radio button.
@@ -55,5 +60,32 @@ public class PRadioButton extends PCompoundButton {
 			view = new RadioButton(pApplet);
 		}
 		super.init(pApplet);
+	}
+	public void setChecked(boolean checked){
+		this.checked = checked;
+		if(initialized){
+			if( ((RadioButton)view).getParent() !=null && ((RadioButton)view).getParent() instanceof RadioGroup){
+				if (checked) {
+					pApplet.runOnUiThread(new Runnable() {
+						public void run() {
+							((RadioButton) view).setChecked(true);
+						}
+					});
+				} else {
+					pApplet.runOnUiThread(new Runnable() {
+						public void run() {
+							((RadioButton) view).setChecked(false);
+						}
+					});
+				}
+			}
+		}
+	}
+	public boolean isChecked() {
+		if (!initialized) {
+			return checked;
+		} else {
+			return ((RadioButton) view).isChecked();
+		}
 	}
 }
