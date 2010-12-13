@@ -19,11 +19,9 @@
 package apwidgets;
 
 import processing.core.PApplet;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.CompoundButton;
 
-public abstract class PCompoundButton extends PButton implements OnClickListener{
+public abstract class PCompoundButton extends PButton{// implements OnClickListener{
 
 	private boolean checked = false;
 
@@ -36,14 +34,11 @@ public abstract class PCompoundButton extends PButton implements OnClickListener
 	 * @return The state of the button.
 	 */
 	public boolean isChecked() {
-	//	if (!initialized) {
+		if (!initialized) {
 			return checked;
-	//	} else {
-	//		long time = System.currentTimeMillis();
-	//		while (view == null && System.currentTimeMillis() < time + 1000) {
-	//		}
-	//		return ((CompoundButton) view).isChecked();
-	//	}
+		} else {
+			return ((CompoundButton) view).isChecked();
+		}
 	}
 
 	public void setChecked(boolean checked) {
@@ -76,14 +71,15 @@ public abstract class PCompoundButton extends PButton implements OnClickListener
 			((CompoundButton) view).setChecked(false);
 
 		}
-		((CompoundButton) view).setOnClickListener(this);
+		//((CompoundButton) view).setOnClickListener(this);
 		super.init(pApplet);
 	}
 	/** 
 	 * Updating the {@link #checked} variable.
 	 */
-	public void onClick(View view) {
+/*	public void onClick(View view) {
 		super.onClick(view);
 		checked = ((CompoundButton) view).isChecked();
 	}
+	*/
 }

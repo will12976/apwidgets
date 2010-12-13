@@ -21,6 +21,7 @@ package apwidgets;
 import java.util.Vector;
 import processing.core.PApplet;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 /**
  * A container for radio buttons. Makes them linked. Add instances of 
@@ -33,12 +34,17 @@ import android.widget.RadioGroup;
  */
 public class PRadioGroup extends PWidget{
 
+	public static final int HORIZONTAL = RadioGroup.HORIZONTAL;
+	public static final int VERTICAL = RadioGroup.VERTICAL;
 	private Vector<PRadioButton> radioButtons = new Vector<PRadioButton>();
 	/**
 	 * Creates a new radio group. 
 	 * @param x The x position of the radio group.
 	 * @param y The y position of the radio group.
 	 */
+	
+	private int orientation = RadioGroup.VERTICAL;
+	
 	public PRadioGroup(int x, int y) {
 		super(x, y, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 		
@@ -60,7 +66,14 @@ public class PRadioGroup extends PWidget{
 					radioButton.getHeight());
 
 			((RadioGroup)view).addView(radioButton.getView(), layout);
+			if(radioButton.checked){
+				((RadioButton)radioButton.getView()).setChecked(true);
+			}
+			
 		}
+		
+		((RadioGroup)view).setOrientation(orientation);
+		
 		super.init(pApplet);
 	}
 	
@@ -72,6 +85,20 @@ public class PRadioGroup extends PWidget{
 	 */
 	public void addRadioButton(PRadioButton radioButton) {
 		radioButtons.addElement(radioButton);
+	}
+
+	public int getOrientation(){
+		return orientation;
+	}
+	public void setOrientation(int orientation){
+		this.orientation = orientation;
+		if (initialized) {
+			pApplet.runOnUiThread(new Runnable() {
+				public void run() {	
+					((RadioGroup)view).setOrientation(getOrientation());
+				}
+			});
+		}
 	}
 
 }
