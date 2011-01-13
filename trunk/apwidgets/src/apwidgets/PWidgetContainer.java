@@ -80,6 +80,11 @@ public class PWidgetContainer{
 	public void addWidget(PWidget pWidget) {
 		pApplet.runOnUiThread(new AddWidgetTask(pWidget));
 	}
+	
+	public void removeWidget(PWidget pWidget) {
+		pApplet.runOnUiThread(new RemoveWidgetTask(pWidget));
+	}
+	
 	//remove from layout and destroy instead, to save resources?
 	public void hide(){
 		pApplet.runOnUiThread(new Runnable()
@@ -126,6 +131,19 @@ public class PWidgetContainer{
 			views.addElement(pWidget.getView());
 		}
 	}
+	
+	class RemoveWidgetTask implements Runnable{
+		private PWidget pWidget;
+		public RemoveWidgetTask(PWidget pWidget){
+			super();
+			this.pWidget = pWidget;
+		}
+		public void run(){
+			layout.removeView(pWidget.getView());
+			views.removeElement(pWidget.getView());
+		}
+	}
+	
 	static class EnableGUITask implements Runnable{
 		PApplet enableGUITaskPApplet;
 		public EnableGUITask(PApplet pApplet){
