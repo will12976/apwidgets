@@ -1,27 +1,27 @@
-#PRadioButtonExample.
+#APRadioButtonExample.
 
-= PRadioButtonExample =
+= APRadioButtonExample =
 
 {{{
 import apwidgets.*;
 
-PWidgetContainer widgetContainer; 
-PRadioButton redAlt;
-PRadioButton greenAlt;
-PRadioButton blueAlt;
-PRadioGroup radioGroup;
+APWidgetContainer widgetContainer; 
+APRadioButton redAlt;
+APRadioButton greenAlt;
+APRadioButton blueAlt;
+APRadioGroup radioGroup;
 
 void setup(){
   
-  widgetContainer = new PWidgetContainer(this); //create new container for widgets
+  widgetContainer = new APWidgetContainer(this); //create new container for widgets
   
-  radioGroup = new PRadioGroup(10, 10); //create a new radiogroup
-  radioGroup.setOrientation(PRadioGroup.HORIZONTAL);
- // radioGroup.setOrientation(PRadioGroup.VERTICAL);
+  radioGroup = new APRadioGroup(10, 10); //create a new radiogroup
+  radioGroup.setOrientation(APRadioGroup.HORIZONTAL);
+ // radioGroup.setOrientation(APRadioGroup.VERTICAL);
   
-  redAlt = new PRadioButton("Red  "); //create new radiobutton from label.
-  greenAlt = new PRadioButton("Green "); //create new radiobutton from label.
-  blueAlt = new PRadioButton("Blue"); //create new radiobutton from label.
+  redAlt = new APRadioButton("Red  "); //create new radiobutton from label.
+  greenAlt = new APRadioButton("Green "); //create new radiobutton from label.
+  blueAlt = new APRadioButton("Blue"); //create new radiobutton from label.
   
   
   
