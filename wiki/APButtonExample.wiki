@@ -31,7 +31,7 @@ void draw(){
 }
 
 //onClickWidget is called when a widget is clicked/touched
-void onClickWidget(PWidget widget){
+void onClickWidget(APWidget widget){
   
   if(widget == button1){ //if it was button1 that was clicked
     rectSize = 100; //set the smaller size
