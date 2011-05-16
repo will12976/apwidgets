@@ -1,5 +1,7 @@
+#summary APToggleButtonExample.
 
 =APToggleButtonExample=
+
 {{{
 import apwidgets.*;
 
