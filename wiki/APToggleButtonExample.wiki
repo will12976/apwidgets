@@ -15,7 +15,7 @@ void setup(){
   widgetContainer.addWidget(toggleButton); //place toggle button in container
   toggleButton.setChecked(true); //toggle button is on from the beginning
   
-  //the following methods specify different labels for the individual states
+  //the following methods specify individual labels for on and off
 //  toggleButton.setTextOn("Rectangle on");
 //  toggleButton.setTextOff("Rectangle off");
 }
