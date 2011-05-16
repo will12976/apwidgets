@@ -24,7 +24,6 @@ void draw(){
   
   background(0); //black background
   
-  //the size of the rectangle is controlled with the buttons
   if(toggleButton.isChecked()){ //if the toggle button is on
     rect(50, 20, 100, 100); // draw the rectangle
   }
