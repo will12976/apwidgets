@@ -9,7 +9,7 @@ import android.text.InputType;
 import android.view.inputmethod.EditorInfo;
 
 APWidgetContainer container;
-PEditText textField, numbersField, textField2, phoneNumberField;
+APEditText textField, numbersField, textField2, phoneNumberField;
 
 String info = "";
 
